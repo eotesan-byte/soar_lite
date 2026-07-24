@@ -1,0 +1,9 @@
+=========================================
+         REPORTE DE SEGURIDAD SOC        
+=========================================
+[*] Fecha del reporte               : 2026-07-23 13:10:25
+[*] Total de registros analizados : 10
+[i] Eventos informativos (INFO)   : 1
+[!] Advertencias (WARNING)        : 7
+[X] Incidentes críticos (CRITICAL): 2
+=========================================

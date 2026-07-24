@@ -1,0 +1,4 @@
+2026-07-17 10:00:01 INFO Acceso permitido usuario: admin
+2026-07-17 10:05:23 WARN Fallo de autenticación usuario: root
+2026-07-17 10:10:45 INFO Acceso permitido usuario: invitado
+2026-07-17 10:15:10 WARN Fallo de autenticación usuario: admin

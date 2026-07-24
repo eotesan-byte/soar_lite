@@ -1,0 +1,10 @@
+[2026-07-23 13:10:25] [INFO] IP: 192.168.1.10 - Cierre de sesión de usuario
+[2026-07-23 13:10:25] [WARNING] IP: 198.51.100.23 - Intento de acceso con credenciales incorrectas
+[2026-07-23 13:10:25] [CRITICAL] IP: 172.16.254.1 - Desbordamiento de búfer detectado en el puerto 80
+[2026-07-23 13:10:25] [CRITICAL] IP: 172.16.254.1 - Inyección SQL detectada en el parámetro de entrada
+[2026-07-23 13:10:25] [WARNING] IP: 10.0.0.15 - Intento de acceso con credenciales incorrectas
+[2026-07-23 13:10:25] [WARNING] IP: 203.0.113.42 - Puerto no autorizado escaneado
+[2026-07-23 13:10:25] [WARNING] IP: 192.168.1.10 - Puerto no autorizado escaneado
+[2026-07-23 13:10:25] [WARNING] IP: 10.0.0.15 - Alto uso de memoria detectado en el servicio web
+[2026-07-23 13:10:25] [WARNING] IP: 172.16.254.1 - Intento de acceso con credenciales incorrectas
+[2026-07-23 13:10:25] [WARNING] IP: 198.51.100.23 - Intento de acceso con credenciales incorrectas
