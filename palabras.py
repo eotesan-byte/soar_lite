@@ -31,7 +31,8 @@ PALABRAS_CLAVE = {
         "Suspicious redirect",         # Redirección web maliciosa hacia sitios de phishing.
         "File dropped in temp"         # Creación de ejecutables en carpetas temporales (infección inicial).
     ]
-    LISTA_IPS = [
+}
+LISTA_IPS = [
     "192.168.1.10",
     "10.0.0.15",
     "172.16.254.1",

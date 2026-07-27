@@ -1,0 +1,10 @@
+[2026-07-27 13:31:47] [CRITICAL] IP: 10.0.0.15 - Inyección SQL detectada en el parámetro de entrada
+[2026-07-27 13:31:47] [CRITICAL] IP: 198.51.100.23 - Desbordamiento de búfer detectado en el puerto 80
+[2026-07-27 13:31:47] [WARNING] IP: 198.51.100.23 - Alto uso de memoria detectado en el servicio web
+[2026-07-27 13:31:47] [INFO] IP: 10.0.0.15 - Servicio reiniciado correctamente
+[2026-07-27 13:31:47] [WARNING] IP: 192.168.1.10 - Alto uso de memoria detectado en el servicio web
+[2026-07-27 13:31:47] [INFO] IP: 10.0.0.15 - Cierre de sesión de usuario
+[2026-07-27 13:31:47] [CRITICAL] IP: 10.0.0.15 - Desbordamiento de búfer detectado en el puerto 80
+[2026-07-27 13:31:47] [CRITICAL] IP: 10.0.0.15 - Acceso root no autorizado detectado
+[2026-07-27 13:31:47] [WARNING] IP: 10.0.0.15 - Alto uso de memoria detectado en el servicio web
+[2026-07-27 13:31:47] [CRITICAL] IP: 172.16.254.1 - Inyección SQL detectada en el parámetro de entrada
