@@ -1,8 +1,10 @@
 # Importamos nuestros módulos
 import generador
 import analizador
+import basedatos
 
 def main():
+    basedatos.crear_tabla()
     print("=========================================")
     print("   INICIANDO SIMULADOR SOC - SOAR LITE   ")
     print("=========================================")

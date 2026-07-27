@@ -31,4 +31,32 @@ PALABRAS_CLAVE = {
         "Suspicious redirect",         # Redirección web maliciosa hacia sitios de phishing.
         "File dropped in temp"         # Creación de ejecutables en carpetas temporales (infección inicial).
     ]
-}
+    LISTA_IPS = [
+    "192.168.1.10",
+    "10.0.0.15",
+    "172.16.254.1",
+    "198.51.100.23",
+    "203.0.113.42"
+]
+# IPs de ejemplo (de rangos reservados para pruebas, no son IPs reales de nadie).
+
+NIVELES_SEVERIDAD = ["INFO", "WARNING", "CRITICAL"]
+# Los tres niveles que generador.py elige al azar para cada log.
+
+MENSAJES_INFO = [
+    "Acceso permitido usuario: admin",
+    "Cierre de sesión de usuario",
+    "Servicio reiniciado correctamente"
+]
+
+MENSAJES_WARNING = [
+    "Intento de acceso con credenciales incorrectas",
+    "Puerto no autorizado escaneado",
+    "Alto uso de memoria detectado en el servicio web"
+]
+
+MENSAJES_CRITICAL = [
+    "Inyección SQL detectada en el parámetro de entrada",
+    "Desbordamiento de búfer detectado en el puerto 80",
+    "Acceso root no autorizado detectado"
+]
