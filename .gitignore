@@ -1,0 +1,11 @@
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de logs y reportes generados en ejecución local
+servidor.log
+logs_servidor.txt
+firewall_block.txt
+reporte_seguridad.txt
+reporte_final.txt
+"reporte seguridad.txt"

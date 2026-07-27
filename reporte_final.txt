@@ -1,9 +1,0 @@
-=== REPORTE DE SENSOR SOAR LITE ===
-[2026-07-22 12:57:32] [2026-07-22 12:52:01] - [WARNING] - IP: 198.51.100.23 - Mensaje: Intento de acceso con credenciales incorrectas
-[2026-07-22 12:57:32] [2026-07-22 12:52:01] - [WARNING] - IP: 10.0.0.15 - Mensaje: Puerto no autorizado escaneado
-[2026-07-22 12:57:32] [2026-07-22 12:52:01] - [WARNING] - IP: 203.0.113.42 - Mensaje: Puerto no autorizado escaneado
-
---- RESUMEN DE AMENAZAS ---
-Total Warnings: 3
-Total Criticals: 0
-TOTAL LINEAS:10
