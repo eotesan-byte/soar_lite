@@ -1,0 +1,56 @@
+{
+    "puertos_abiertos": [
+        49666,
+        5040,
+        49489,
+        49667,
+        49666,
+        54495,
+        49664,
+        49668,
+        49664,
+        445,
+        139,
+        49668,
+        49669,
+        49665,
+        445,
+        49667,
+        49669,
+        30904,
+        135,
+        49665,
+        49487,
+        135
+    ],
+    "software_instalado": [
+        {
+            "nombre": "Git",
+            "version": "2.55.0.3"
+        },
+        {
+            "nombre": "Microsoft Update Health Tools",
+            "version": "3.74.0.0"
+        },
+        {
+            "nombre": "Update for x64-based Windows Systems (KB5001716)",
+            "version": "8.94.0.0"
+        },
+        {
+            "nombre": "Google Chrome",
+            "version": "150.0.7871.187"
+        },
+        {
+            "nombre": "Microsoft Edge",
+            "version": "150.0.4078.99"
+        },
+        {
+            "nombre": "WebView2 Runtime de Microsoft Edge",
+            "version": "150.0.4078.99"
+        },
+        {
+            "nombre": "Intel(R) Processor Graphics",
+            "version": "10.18.15.4248"
+        }
+    ]
+}
