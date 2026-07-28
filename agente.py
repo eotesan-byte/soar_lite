@@ -1,6 +1,6 @@
 import psutil 
 import winreg #registro windows 
-
+import basedatos
 def listar_puertos_abiertos():
     conexiones = psutil.net_connections(kind='inet') #nos da una lista de conexiones delde red del sistema
     puertos = []
@@ -60,8 +60,10 @@ if __name__ == "__main__":
     with open("reporte_agente.json", "w", encoding="utf-8") as archivo:
         json.dump(reporte, archivo, indent=4, ensure_ascii=False)
 
+    basedatos.crear_tablas_agente()
+    basedatos.guardar_reporte_en_bd(reporte)
+
     print(f"Puertos encontrados: {len(reporte['puertos_abiertos'])}")
     print(f"Software encontrado: {len(reporte['software_instalado'])}")
-    print("Reporte guardado en reporte_agente.json")
-
+    print("Reporte guardado en reporte_agente.json y en soar.db")
 

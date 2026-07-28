@@ -23,11 +23,7 @@ def crear_tabla():
     # Esta función se asegura de que la tabla "eventos" exista.
     # La llamaremos una vez al arrancar el programa.
     conexion = crear_conexion()
-    # Abrimos la conexión a la base de datos.
-
     cursor = conexion.cursor()
-    # El "cursor" es como el bolígrafo con el que escribimos/leemos en la BD.
-    # Toda instrucción SQL se ejecuta a través de él.
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS eventos (
@@ -38,18 +34,9 @@ def crear_tabla():
             mensaje TEXT
         )
     """)
-    # "CREATE TABLE IF NOT EXISTS" crea la tabla solo si aún no existe,
-    # así puedes ejecutar esta función cada vez sin que dé error.
-    # "id INTEGER PRIMARY KEY AUTOINCREMENT" crea un número único
-    # que se genera solo para cada fila (fila 1, fila 2, fila 3...).
 
     conexion.commit()
-    # "commit" guarda de verdad los cambios en el archivo .db.
-    # Sin esto, la creación de la tabla se quedaría solo "en memoria"
-    # y se perdería al cerrar el programa.
-
     conexion.close()
-    # Cerramos la conexión, buena práctica para no dejarla abierta sin usar.
 
 
 def insertar_evento(fecha, severidad, ip, mensaje):
@@ -62,14 +49,55 @@ def insertar_evento(fecha, severidad, ip, mensaje):
         "INSERT INTO eventos (fecha, severidad, ip, mensaje) VALUES (?, ?, ?, ?)",
         (fecha, severidad, ip, mensaje)
     )
-    # "INSERT INTO eventos (...) VALUES (...)" añade una fila nueva.
-    # Los signos "?" son "huecos" que se rellenan con la tupla de después.
-    # IMPORTANTE: nunca metas los valores directamente en el texto SQL
-    # (tipo f-string) porque es inseguro; los "?" evitan ese problema
-    # (se llama "SQL injection", ¡el mismo ataque que tienes en palabras.py!).
 
     conexion.commit()
-    # Guardamos el cambio de verdad en el archivo.
-
     conexion.close()
-    # Cerramos la conexión.
+
+
+def crear_tablas_agente():
+    # Igual que crear_tabla(), pero para las tablas de puertos y software.
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS puertos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            puerto INTEGER,
+            fecha TEXT
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS software (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT,
+            version TEXT,
+            fecha TEXT
+        )
+    """)
+
+    conexion.commit()
+    conexion.close()
+
+
+def guardar_reporte_en_bd(reporte):
+    from datetime import datetime
+
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+    ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    for puerto in reporte["puertos_abiertos"]:
+        cursor.execute(
+            "INSERT INTO puertos (puerto, fecha) VALUES (?, ?)",
+            (puerto, ahora)
+        )
+
+    for programa in reporte["software_instalado"]:
+        cursor.execute(
+            "INSERT INTO software (nombre, version, fecha) VALUES (?, ?, ?)",
+            (programa["nombre"], programa["version"], ahora)
+        )
+
+    conexion.commit()
+    conexion.close()
