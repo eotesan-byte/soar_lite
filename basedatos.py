@@ -101,15 +101,14 @@ def limpiar_historico_antiguo():
     conexion.close()
 
 
-def obtener_ultimos_eventos(limite =10):
+def obtener_ultimos_eventos(limite=10):
     conexion = crear_conexion()
     cursor = conexion.cursor()
     cursor.execute(
-        "SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIM ?", 
-        (limite)
+        "SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIMIT ?",
+        (limite,)
     )
-
-    resultados = cursor.fetchall
+    resultados = cursor.fetchall()
     conexion.close()
     return resultados
 
