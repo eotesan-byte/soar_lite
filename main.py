@@ -1,23 +1,50 @@
-# Importamos nuestros módulos
 import generador
 import analizador
 import basedatos
+import agente
+
+def mostrar_menu():
+    print("\n=========================================")
+    print("        SOAR-LITE — MENÚ PRINCIPAL        ")
+    print("=========================================")
+    print("1. Generar logs nuevos")
+    print("2. Ejecutar analizador")
+    print("3. Ejecutar agente (puertos + software)")
+    print("4. Ver histórico de eventos")
+    print("5. Salir")
+
+def ver_historico():
+    eventos = basedatos.obtener_ultimos_eventos()
+    if not eventos:
+        print("[-] No hay eventos guardados todavía.")
+        return
+    print("\n--- Últimos eventos registrados ---")
+    for fecha, severidad, ip, mensaje in eventos:
+        print(f"[{fecha}] [{severidad}] IP: {ip} - {mensaje}")
 
 def main():
     basedatos.crear_tabla()
-    print("=========================================")
-    print("   INICIANDO SIMULADOR SOC - SOAR LITE   ")
-    print("=========================================")
-    
-    # Paso 1: Llamamos al generador de tráfico/logs
-    generador.generar_logs()
-    
-    # Paso 2: Llamamos al analizador de seguridad
-    analizador.analizar_logs()
-    
-    print("\n=========================================")
-    print("   CICLO DE SIMULACIÓN FINALIZADO        ")
-    print("=========================================")
+    while True:
+        mostrar_menu()
+        opcion = input("Elige una opción: ").strip()
+
+        if opcion == "1":
+            generador.generar_logs()
+        elif opcion == "2":
+            analizador.analizar_logs()
+        elif opcion == "3":
+            reporte = agente.generar_reporte()
+            basedatos.crear_tablas_agente()
+            basedatos.guardar_reporte_en_bd(reporte)
+            basedatos.limpiar_historico_antiguo()
+            print(f"Puertos: {len(reporte['puertos_abiertos'])} | Software: {len(reporte['software_instalado'])}")
+        elif opcion == "4":
+            ver_historico()
+        elif opcion == "5":
+            print("Saliendo...")
+            break
+        else:
+            print("[-] Opción no válida, prueba otra vez.")
 
 if __name__ == "__main__":
     main()

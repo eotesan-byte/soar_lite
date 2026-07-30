@@ -1,7 +1,7 @@
 =========================================
       REPORTE INTEGRAL SOC-SOAR LITE     
 =========================================
-[*] Fecha del reporte               : 2026-07-27 13:31:47
+[*] Fecha del reporte               : 2026-07-31 00:42:00
 [*] Total de registros analizados : 10
 [i] Eventos informativos (INFO)   : 2
 [!] Advertencias (WARNING)        : 3
@@ -12,6 +12,6 @@
 -----------------------------------------
 [⚡] ACCIONES DE RESPUESTA AUTOMÁTICA (SOAR):
   - [BLOQUEO ACTIVO] - IP aislada por alerta crítica: 10.0.0.15
-  - [BLOQUEO ACTIVO] - IP aislada por alerta crítica: 198.51.100.23
   - [BLOQUEO ACTIVO] - IP aislada por alerta crítica: 172.16.254.1
+  - [BLOQUEO ACTIVO] - IP aislada por alerta crítica: 198.51.100.23
 =========================================
