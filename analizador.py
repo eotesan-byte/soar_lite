@@ -72,6 +72,14 @@ def analizar_logs():
                         if len(partes) > 1:
                             ip_detectada = partes[1].split("-")[0].strip()
                             acciones_soar.append(f"[BLOQUEO ACTIVO] - IP aislada por alerta crítica: {ip_detectada}")
+
+                            print("\n" + "🚨" * 15)
+                            print(f"  ALERTA CRÍTICA — IP BLOQUEADA: {ip_detectada}")
+                            print("🚨" * 15 + "\n")
+
+                            with open("firewall_block.txt", "a", encoding="utf-8") as archivo_firewall:
+                                marca_tiempo = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                archivo_firewall.write(f"{marca_tiempo} - BLOQUEO: {ip_detectada}\n")
                 elif "WARNING" in linea:
                     warnings += 1
                 elif "INFO" in linea:

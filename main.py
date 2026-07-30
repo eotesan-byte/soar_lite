@@ -45,6 +45,10 @@ def main():
             break
         else:
             print("[-] Opción no válida, prueba otra vez.")
+            continue
+
+        input("\nPulsa Enter para volver al menú...")
+ 
 
 if __name__ == "__main__":
     main()

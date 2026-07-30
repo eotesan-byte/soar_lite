@@ -1,7 +1,7 @@
 =========================================
       REPORTE INTEGRAL SOC-SOAR LITE     
 =========================================
-[*] Fecha del reporte               : 2026-07-31 00:53:56
+[*] Fecha del reporte               : 2026-07-31 01:16:56
 [*] Total de registros analizados : 10
 [i] Eventos informativos (INFO)   : 2
 [!] Advertencias (WARNING)        : 5
