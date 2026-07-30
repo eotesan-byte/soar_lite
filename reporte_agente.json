@@ -1,29 +1,130 @@
 {
     "puertos_abiertos": [
-        49487,
-        135,
-        135,
-        49667,
-        49665,
-        7680,
-        49665,
-        49669,
-        49666,
-        49669,
-        49664,
-        5040,
-        445,
-        445,
-        49668,
-        49664,
-        54495,
-        49667,
-        49668,
-        30904,
-        49666,
-        139,
-        7680,
-        49489
+        {
+            "puerto": 49668,
+            "protocolo": "TCP",
+            "proceso": "spoolsv.exe"
+        },
+        {
+            "puerto": 49665,
+            "protocolo": "TCP",
+            "proceso": "wininit.exe"
+        },
+        {
+            "puerto": 51479,
+            "protocolo": "TCP",
+            "proceso": "Code.exe"
+        },
+        {
+            "puerto": 135,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 445,
+            "protocolo": "TCP",
+            "proceso": "System"
+        },
+        {
+            "puerto": 5040,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 49669,
+            "protocolo": "TCP",
+            "proceso": "services.exe"
+        },
+        {
+            "puerto": 49667,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 49669,
+            "protocolo": "TCP",
+            "proceso": "services.exe"
+        },
+        {
+            "puerto": 7680,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 49666,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 445,
+            "protocolo": "TCP",
+            "proceso": "System"
+        },
+        {
+            "puerto": 42050,
+            "protocolo": "TCP",
+            "proceso": "OneDrive.Sync.Service.exe"
+        },
+        {
+            "puerto": 7680,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 49668,
+            "protocolo": "TCP",
+            "proceso": "spoolsv.exe"
+        },
+        {
+            "puerto": 49664,
+            "protocolo": "TCP",
+            "proceso": "lsass.exe"
+        },
+        {
+            "puerto": 51478,
+            "protocolo": "TCP",
+            "proceso": "Code.exe"
+        },
+        {
+            "puerto": 49664,
+            "protocolo": "TCP",
+            "proceso": "lsass.exe"
+        },
+        {
+            "puerto": 49665,
+            "protocolo": "TCP",
+            "proceso": "wininit.exe"
+        },
+        {
+            "puerto": 50157,
+            "protocolo": "TCP",
+            "proceso": "Code.exe"
+        },
+        {
+            "puerto": 135,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 55235,
+            "protocolo": "TCP",
+            "proceso": "Code.exe"
+        },
+        {
+            "puerto": 49666,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 49667,
+            "protocolo": "TCP",
+            "proceso": "svchost.exe"
+        },
+        {
+            "puerto": 139,
+            "protocolo": "TCP",
+            "proceso": "System"
+        }
     ],
     "software_instalado": [
         {
@@ -35,6 +136,10 @@
             "version": "3.74.0.0"
         },
         {
+            "nombre": "Node.js",
+            "version": "24.18.0"
+        },
+        {
             "nombre": "Update for x64-based Windows Systems (KB5001716)",
             "version": "8.94.0.0"
         },
@@ -44,11 +149,11 @@
         },
         {
             "nombre": "Microsoft Edge",
-            "version": "150.0.4078.99"
+            "version": "150.0.4078.105"
         },
         {
             "nombre": "WebView2 Runtime de Microsoft Edge",
-            "version": "150.0.4078.99"
+            "version": "150.0.4078.105"
         },
         {
             "nombre": "Intel(R) Processor Graphics",

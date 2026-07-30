@@ -1,12 +1,34 @@
-import psutil 
-import winreg #registro windows 
+import psutil
+import socket
+import winreg  # registro windows
 import basedatos
+import json
+
+
 def listar_puertos_abiertos():
-    conexiones = psutil.net_connections(kind='inet') #nos da una lista de conexiones delde red del sistema
+    conexiones = psutil.net_connections(kind='inet')  # nos da una lista de conexiones de red del sistema
     puertos = []
     for conexion in conexiones:
-        if conexion.status == 'LISTEN':  #filtramos solo puertos abiertos, es decir los ueestan escuchando
-            puertos.append(conexion.laddr.port) #local addres, sacamos el numero de puerto
+        if conexion.status == 'LISTEN':  # filtramos solo puertos abiertos, es decir los que estan escuchando
+            if conexion.type == socket.SOCK_STREAM:
+                protocolo = "TCP"
+            elif conexion.type == socket.SOCK_DGRAM:
+                protocolo = "UDP"
+            else:
+                protocolo = "desconocido"
+
+            # intentamos averiguar que programa tiene abierto este puerto
+            try:
+                proceso = psutil.Process(conexion.pid).name()
+            except (psutil.AccessDenied, psutil.NoSuchProcess, TypeError):
+                proceso = "desconocido"
+
+            puertos.append({
+                "puerto": conexion.laddr.port,
+                "protocolo": protocolo,
+                "proceso": proceso
+            })
+            
     return puertos
 
 
@@ -41,9 +63,6 @@ def listar_software_instalado():
     return software
 
 
-
-import json
-
 def generar_reporte():
     reporte = {
         "puertos_abiertos": listar_puertos_abiertos(),
@@ -54,6 +73,7 @@ def generar_reporte():
     }
     return reporte
 
+
 if __name__ == "__main__":
     reporte = generar_reporte()
 
@@ -62,8 +82,8 @@ if __name__ == "__main__":
 
     basedatos.crear_tablas_agente()
     basedatos.guardar_reporte_en_bd(reporte)
+    basedatos.limpiar_historico_antiguo()
 
     print(f"Puertos encontrados: {len(reporte['puertos_abiertos'])}")
     print(f"Software encontrado: {len(reporte['software_instalado'])}")
     print("Reporte guardado en reporte_agente.json y en soar.db")
-

@@ -1,0 +1,576 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+agente.py
+analizador.py
+basedatos.py
+generador.py
+main.py
+palabras.py
+README.md
+reporte_agente.json
+soar.db
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="generador.py">
+import random
+import os
+from datetime import datetime  # <--- Para sacar la fecha y hora actual
+import palabras
+
+def generar_logs():
+    nombre_archivo = "servidor.log"
+    cantidad_logs = 10
+    
+    with open(nombre_archivo, "w", encoding="utf-8") as f:
+        for _ in range(cantidad_logs):
+            ip = random.choice(palabras.LISTA_IPS)
+            nivel = random.choice(palabras.NIVELES_SEVERIDAD)
+            
+            # Obtenemos la fecha y hora actual formateada
+            tiempo_actual = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            
+            if nivel == "INFO":
+                mensaje = random.choice(palabras.MENSAJES_INFO)
+            elif nivel == "WARNING":
+                mensaje = random.choice(palabras.MENSAJES_WARNING)
+            else:
+                mensaje = random.choice(palabras.MENSAJES_CRITICAL)
+                
+            # Escribimos el log incluyendo la marca de tiempo
+            f.write(f"[{tiempo_actual}] [{nivel}] IP: {ip} - {mensaje}\n")
+            
+    ruta_absoluta = os.path.abspath(nombre_archivo)
+    print(f"[+] --- ¡ARCHIVO '{nombre_archivo}' GENERADO CON ÉXITO! ---")
+    print(f"[i] Ruta de almacenamiento: {ruta_absoluta}")
+</file>
+
+<file path="README.md">
+# SOAR Lite - Simulador de Seguridad (SOC-SOAR)
+
+Proyecto en fase de prototipo/desarrollo enfocado en la automatización de la ciberseguridad, análisis de logs y ejecución de respuestas automáticas (Playbooks).
+
+## Estructura del Proyecto
+- `main.py`: Orquestador principal del flujo.
+- `generador.py`: Generador de eventos y registros de logs simulados.
+- `analizador.py`: Motor de análisis de seguridad y generación de reportes SOC-SOAR.
+- `palabras.py`: Catálogo de amenazas, palabras clave y listas de severidad.
+</file>
+
+<file path=".gitignore">
+# Archivos de caché de Python
+__pycache__/
+*.pyc
+
+# Archivos de logs y reportes generados en ejecución local
+servidor.log
+logs_servidor.txt
+firewall_block.txt
+reporte_seguridad.txt
+reporte_final.txt
+</file>
+
+<file path="agente.py">
+import psutil 
+import winreg #registro windows 
+import basedatos
+def listar_puertos_abiertos():
+    conexiones = psutil.net_connections(kind='inet') #nos da una lista de conexiones delde red del sistema
+    puertos = []
+    for conexion in conexiones:
+        if conexion.status == 'LISTEN':  #filtramos solo puertos abiertos, es decir los ueestan escuchando
+            puertos.append(conexion.laddr.port) #local addres, sacamos el numero de puerto
+    return puertos
+
+
+def listar_software_instalado():
+    rutas_registro = [
+        r"SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall",
+        r"SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall"
+    ]
+    software = []
+
+    for ruta in rutas_registro:
+        try:
+            clave_principal = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, ruta)
+        except FileNotFoundError:
+            continue
+
+        total_subclaves = winreg.QueryInfoKey(clave_principal)[0]
+
+        for i in range(total_subclaves):
+            try:
+                nombre_subclave = winreg.EnumKey(clave_principal, i)
+                subclave = winreg.OpenKey(clave_principal, nombre_subclave)
+                nombre = winreg.QueryValueEx(subclave, "DisplayName")[0]
+                try:
+                    version = winreg.QueryValueEx(subclave, "DisplayVersion")[0]
+                except FileNotFoundError:
+                    version = "desconocida"
+                software.append((nombre, version))
+            except (FileNotFoundError, OSError):
+                continue
+
+    return software
+
+
+
+import json
+
+def generar_reporte():
+    reporte = {
+        "puertos_abiertos": listar_puertos_abiertos(),
+        "software_instalado": [
+            {"nombre": nombre, "version": version}
+            for nombre, version in listar_software_instalado()
+        ]
+    }
+    return reporte
+
+if __name__ == "__main__":
+    reporte = generar_reporte()
+
+    with open("reporte_agente.json", "w", encoding="utf-8") as archivo:
+        json.dump(reporte, archivo, indent=4, ensure_ascii=False)
+
+    basedatos.crear_tablas_agente()
+    basedatos.guardar_reporte_en_bd(reporte)
+
+    print(f"Puertos encontrados: {len(reporte['puertos_abiertos'])}")
+    print(f"Software encontrado: {len(reporte['software_instalado'])}")
+    print("Reporte guardado en reporte_agente.json y en soar.db")
+</file>
+
+<file path="basedatos.py">
+# basedatos.py
+# Este módulo se encarga de todo lo relacionado con guardar y leer datos
+# en la base de datos SQLite. Así centralizamos aquí toda la lógica de BD,
+# y el resto del programa no necesita saber cómo funciona SQL por dentro.
+
+import sqlite3
+# Importamos el módulo sqlite3, que viene incluido con Python.
+# Nos da las herramientas para crear/abrir un archivo .db y hablar con él.
+
+NOMBRE_BD = "soar.db"
+# Guardamos el nombre del archivo de base de datos en una variable.
+# Así, si algún día lo quieres cambiar, solo lo tocas aquí una vez.
+
+
+def crear_conexion():
+    # Esta función abre (o crea, si no existe) el archivo soar.db
+    # y devuelve un objeto "conexión" que usaremos para hablar con la BD.
+    conexion = sqlite3.connect(NOMBRE_BD)
+    return conexion
+
+
+def crear_tabla():
+    # Esta función se asegura de que la tabla "eventos" exista.
+    # La llamaremos una vez al arrancar el programa.
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS eventos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            fecha TEXT,
+            severidad TEXT,
+            ip TEXT,
+            mensaje TEXT
+        )
+    """)
+
+    conexion.commit()
+    conexion.close()
+
+
+def insertar_evento(fecha, severidad, ip, mensaje):
+    # Esta función guarda un evento nuevo en la tabla.
+    # Los cuatro parámetros son los datos de ese evento.
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute(
+        "INSERT INTO eventos (fecha, severidad, ip, mensaje) VALUES (?, ?, ?, ?)",
+        (fecha, severidad, ip, mensaje)
+    )
+
+    conexion.commit()
+    conexion.close()
+
+
+def crear_tablas_agente():
+    # Igual que crear_tabla(), pero para las tablas de puertos y software.
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS puertos (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            puerto INTEGER,
+            fecha TEXT
+        )
+    """)
+
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS software (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nombre TEXT,
+            version TEXT,
+            fecha TEXT
+        )
+    """)
+
+    conexion.commit()
+    conexion.close()
+
+
+def guardar_reporte_en_bd(reporte):
+    from datetime import datetime
+
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+    ahora = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    for puerto in reporte["puertos_abiertos"]:
+        cursor.execute(
+            "INSERT INTO puertos (puerto, fecha) VALUES (?, ?)",
+            (puerto, ahora)
+        )
+
+    for programa in reporte["software_instalado"]:
+        cursor.execute(
+            "INSERT INTO software (nombre, version, fecha) VALUES (?, ?, ?)",
+            (programa["nombre"], programa["version"], ahora)
+        )
+
+    conexion.commit()
+    conexion.close()
+</file>
+
+<file path="main.py">
+# Importamos nuestros módulos
+import generador
+import analizador
+import basedatos
+
+def main():
+    basedatos.crear_tabla()
+    print("=========================================")
+    print("   INICIANDO SIMULADOR SOC - SOAR LITE   ")
+    print("=========================================")
+    
+    # Paso 1: Llamamos al generador de tráfico/logs
+    generador.generar_logs()
+    
+    # Paso 2: Llamamos al analizador de seguridad
+    analizador.analizar_logs()
+    
+    print("\n=========================================")
+    print("   CICLO DE SIMULACIÓN FINALIZADO        ")
+    print("=========================================")
+
+if __name__ == "__main__":
+    main()
+</file>
+
+<file path="reporte_agente.json">
+{
+    "puertos_abiertos": [
+        49487,
+        135,
+        135,
+        49667,
+        49665,
+        7680,
+        49665,
+        49669,
+        49666,
+        49669,
+        49664,
+        5040,
+        445,
+        445,
+        49668,
+        49664,
+        54495,
+        49667,
+        49668,
+        30904,
+        49666,
+        139,
+        7680,
+        49489
+    ],
+    "software_instalado": [
+        {
+            "nombre": "Git",
+            "version": "2.55.0.3"
+        },
+        {
+            "nombre": "Microsoft Update Health Tools",
+            "version": "3.74.0.0"
+        },
+        {
+            "nombre": "Update for x64-based Windows Systems (KB5001716)",
+            "version": "8.94.0.0"
+        },
+        {
+            "nombre": "Google Chrome",
+            "version": "150.0.7871.187"
+        },
+        {
+            "nombre": "Microsoft Edge",
+            "version": "150.0.4078.99"
+        },
+        {
+            "nombre": "WebView2 Runtime de Microsoft Edge",
+            "version": "150.0.4078.99"
+        },
+        {
+            "nombre": "Intel(R) Processor Graphics",
+            "version": "10.18.15.4248"
+        }
+    ]
+}
+</file>
+
+<file path="analizador.py">
+import os
+from datetime import datetime
+from palabras import PALABRAS_CLAVE
+import basedatos
+# Nuevo: importamos nuestro módulo de base de datos para poder guardar
+# cada evento ahí, además de en el reporte de texto.
+
+
+def parsear_linea(linea):
+    # Función nueva. Recibe una línea como:
+    # "[2026-07-23 13:10:25] [CRITICAL] IP: 172.16.254.1 - Inyección SQL detectada"
+    # y la separa en sus 4 partes: fecha, severidad, ip, mensaje.
+    try:
+        partes = linea.split("] ", 2)
+        # Divide la línea por "] " (corchete + espacio), como máximo en 3 trozos.
+        # Resultado: ["[2026-07-23 13:10:25", "[CRITICAL", "IP: 172.16.254.1 - Inyección SQL detectada"]
+
+        fecha = partes[0].replace("[", "").strip()
+        # Quitamos el corchete que sobra al principio y los espacios extra.
+
+        severidad = partes[1].replace("[", "").replace("]", "").strip()
+        # Igual, quitamos los corchetes sobrantes.
+
+        resto = partes[2]
+        # resto = "IP: 172.16.254.1 - Inyección SQL detectada"
+
+        ip_y_mensaje = resto.split(" - ", 1)
+        # Separa "IP: 172.16.254.1" de "Inyección SQL detectada" por el " - ".
+
+        ip = ip_y_mensaje[0].replace("IP:", "").strip()
+        mensaje = ip_y_mensaje[1].strip() if len(ip_y_mensaje) > 1 else ""
+
+        return fecha, severidad, ip, mensaje
+        # Devolvemos las 4 partes juntas (una "tupla").
+
+    except (IndexError, ValueError):
+        # Si una línea viene rota o con formato raro, no rompemos el programa,
+        # simplemente decimos "no he podido leer esta línea".
+        return None
+
+
+def analizar_logs():
+    nombre_archivo = "servidor.log"
+    nombre_reporte = "reporte_seguridad.txt"
+    print(f"\n[+] Leyendo el archivo '{nombre_archivo}' para análisis y respuesta SOAR...")
+
+    try:
+        with open(nombre_archivo, "r", encoding="utf-8") as archivo_log:
+            lineas = archivo_log.readlines()
+
+            total_logs = len(lineas)
+            criticos = 0
+            warnings = 0
+            infos = 0
+
+            hallazgos = {"CRITICAL": [], "HIGH": [], "WARNING": []}
+            acciones_soar = []
+
+            for linea in lineas:
+                datos = parsear_linea(linea)
+                # Nuevo: intentamos extraer fecha/severidad/ip/mensaje de esta línea.
+                if datos:
+                    fecha, severidad, ip, mensaje = datos
+                    basedatos.insertar_evento(fecha, severidad, ip, mensaje)
+                    # Nuevo: guardamos el evento en la base de datos,
+                    # pase lo que pase con el resto del análisis de abajo.
+
+                if "CRITICAL" in linea:
+                    criticos += 1
+                    if "IP:" in linea:
+                        partes = linea.split("IP:")
+                        if len(partes) > 1:
+                            ip_detectada = partes[1].split("-")[0].strip()
+                            acciones_soar.append(f"[BLOQUEO ACTIVO] - IP aislada por alerta crítica: {ip_detectada}")
+                elif "WARNING" in linea:
+                    warnings += 1
+                elif "INFO" in linea:
+                    infos += 1
+
+                for categoria, lista_palabras in PALABRAS_CLAVE.items():
+                    for amenaza in lista_palabras:
+                        if amenaza.lower() in linea.lower():
+                            if amenaza not in hallazgos[categoria]:
+                                hallazgos[categoria].append(amenaza)
+
+            tiempo_reporte = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            reporte_texto = f"""=========================================
+      REPORTE INTEGRAL SOC-SOAR LITE     
+=========================================
+[*] Fecha del reporte               : {tiempo_reporte}
+[*] Total de registros analizados : {total_logs}
+[i] Eventos informativos (INFO)   : {infos}
+[!] Advertencias (WARNING)        : {warnings}
+[X] Incidentes críticos (CRITICAL): {criticos}
+-----------------------------------------
+[🔍] AMENAZAS ESPECÍFICAS DETECTADAS:
+"""
+            for categoria, lista in hallazgos.items():
+                if lista:
+                    reporte_texto += f"\n  [{categoria}]:\n"
+                    for item in lista:
+                        reporte_texto += f"    - {item}\n"
+
+            reporte_texto += "\n-----------------------------------------\n"
+            reporte_texto += "[⚡] ACCIONES DE RESPUESTA AUTOMÁTICA (SOAR):\n"
+            if acciones_soar:
+                for accion in set(acciones_soar):
+                    reporte_texto += f"  - {accion}\n"
+            else:
+                reporte_texto += "  - Sin acciones de bloqueo requeridas en este ciclo.\n"
+
+            reporte_texto += "========================================="
+
+            print(reporte_texto)
+
+            with open(nombre_reporte, "w", encoding="utf-8") as archivo_rep:
+                archivo_rep.write(reporte_texto)
+
+            print(f"\n[+] ¡Reporte unificado guardado con éxito en '{nombre_reporte}'!")
+
+    except FileNotFoundError:
+        print("[-] Error: No se encontró el archivo servidor.log. Ejecuta el generador primero.")
+
+
+if __name__ == "__main__":
+    analizar_logs()
+</file>
+
+<file path="palabras.py">
+# Catálogo de amenazas realistas para el motor SOC-SOAR Lite
+# Comentarios orientativos para el analista (significado e impacto operativo)
+
+PALABRAS_CLAVE = {
+    "CRITICAL": [
+        "SQL injection",          # Inyección de código malicioso en bases de datos para robar o alterar info.
+        "Remote Code Execution",  # Permite al atacante ejecutar comandos de forma remota en el sistema.
+        "Unauthorized root access",# Acceso ilícito con privilegios máximos de administrador.
+        "Malware signature matched",# Coincidencia confirmada con una firma de troyano o código malicioso.
+        "Reverse shell established",# Conexión saliente maliciosa que otorga una consola de comandos interactiva.
+        "Mass file modification"    # Patrón típico de ransomware cifrando carpetas masivamente.
+    ],
+    "HIGH": [
+        "Failed password for root",       # Intentos repetidos de fuerza bruta a la cuenta del superusuario.
+        "Failed password for invalid user",# Intentos de login usando usuarios que ni existen en el sistema.
+        "Directory traversal",             # Intento de navegar por directorios no autorizados del servidor.
+        "/etc/passwd",                     # Acceso al fichero de usuarios Linux buscando cuentas para ataques.
+        "admin/config.php",                # Localización de paneles de control o ficheros de configuración web.
+        "Privilege escalation attempt",    # Maniobras para elevar permisos a administrador desde una cuenta baja.
+        "PowerShell hidden execution",     # Uso de scripts de consola ocultos para descargar cargas maliciosas.
+        "Suspicious outbound connection"   # Tráfico saliente a IPs/puertos extraños (posible exfiltración).
+    ],
+    "WARNING": [
+        "Port scan detected",          # Sondeo masivo de puertos para ver qué servicios están abiertos.
+        "Multiple connection retries", # Intentos constantes de conexión que pueden saturar un servicio.
+        "HTTP 403 Forbidden",          # Peticiones denegadas por falta de permisos (rastreo de directorios).
+        "High CPU utilization",        # Picos anormales de procesador (típico de bucles o minería oculta).
+        "Anonymous login",             # Acceso anónimo permitido a servicios críticos como FTP.
+        "Rate limit exceeded",         # Superación de peticiones permitidas (ataques de fuerza bruta/bots).
+        "DDoS attack mitigated",       # Denegación de servicio distribuido bloqueada por perimetrales.
+        "Suspicious redirect",         # Redirección web maliciosa hacia sitios de phishing.
+        "File dropped in temp"         # Creación de ejecutables en carpetas temporales (infección inicial).
+    ]
+}
+LISTA_IPS = [
+    "192.168.1.10",
+    "10.0.0.15",
+    "172.16.254.1",
+    "198.51.100.23",
+    "203.0.113.42"
+]
+# IPs de ejemplo (de rangos reservados para pruebas, no son IPs reales de nadie).
+
+NIVELES_SEVERIDAD = ["INFO", "WARNING", "CRITICAL"]
+# Los tres niveles que generador.py elige al azar para cada log.
+
+MENSAJES_INFO = [
+    "Acceso permitido usuario: admin",
+    "Cierre de sesión de usuario",
+    "Servicio reiniciado correctamente"
+]
+
+MENSAJES_WARNING = [
+    "Intento de acceso con credenciales incorrectas",
+    "Puerto no autorizado escaneado",
+    "Alto uso de memoria detectado en el servicio web"
+]
+
+MENSAJES_CRITICAL = [
+    "Inyección SQL detectada en el parámetro de entrada",
+    "Desbordamiento de búfer detectado en el puerto 80",
+    "Acceso root no autorizado detectado"
+]
+</file>
+
+</files>
