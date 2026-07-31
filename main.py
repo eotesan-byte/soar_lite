@@ -35,9 +35,30 @@ def main():
             analizador.analizar_logs()
         elif opcion == "3":
             reporte = agente.generar_reporte()
-            basedatos.guardar_reporte_en_bd(reporte)
+            fecha_nueva = basedatos.guardar_reporte_en_bd(reporte)
             basedatos.limpiar_historico_antiguo()
             print(f"Puertos: {len(reporte['puertos_abiertos'])} | Software: {len(reporte['software_instalado'])}")
+
+            anomalias_puertos = basedatos.detectar_anomalias("puertos", fecha_nueva)
+            for puerto, protocolo, proceso in anomalias_puertos:
+                if proceso == "desconocido":
+                    severidad = "WARNING"
+            else:
+                severidad = "INFO"
+                mensaje = f"Nuevo puerto abierto: {puerto}/{protocolo} (proceso: {proceso})"
+                basedatos.insertar_evento(fecha_nueva, severidad, None, mensaje)
+
+                anomalias_software = basedatos.detectar_anomalias("software", fecha_nueva)
+                for nombre, version in anomalias_software:
+                    mensaje = f"Nuevo software instalado: {nombre} {version}"
+                    basedatos.insertar_evento(fecha_nueva, "INFO", None, mensaje)
+
+                total = len(anomalias_puertos) + len(anomalias_software)
+            if total > 0:
+             print(f"[!] Anomalías detectadas: {len(anomalias_puertos)} puertos nuevos, {len(anomalias_software)} programas nuevos")
+            else:
+             print("[+] Sin cambios respecto al snapshot anterior.")
+      
         elif opcion == "4":
             ver_historico()
         elif opcion == "5":
