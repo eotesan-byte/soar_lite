@@ -101,11 +101,27 @@ def limpiar_historico_antiguo():
     conexion.close()
 
 
+def obtener_snapshot(tabla, fecha):
+    conexion = crear_conexion()
+    cursor = conexion.cursor()
+    if tabla == "puertos":
+        cursor.execute("SELECT puerto, protocolo, proceso FROM puertos WHERE fecha = ?", (fecha,))
+    else:
+        cursor.execute("SELECT nombre, version FROM software WHERE fecha = ?", (fecha,))
+    resultados = cursor.fetchall()
+    conexion.close()
+    # set() quita duplicados exactos automáticamente (por ejemplo, un
+    # mismo programa que a veces aparece registrado dos veces en el
+    # registro de Windows con el mismo nombre y versión).
+    return set(resultados)
+
+
+
 def obtener_ultimos_eventos(limite=10):
     conexion = crear_conexion()
     cursor = conexion.cursor()
     cursor.execute(
-        "SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIMIT ?",
+        cursor.execute("SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIMIT ?",
         (limite,)
     )
     resultados = cursor.fetchall()
@@ -113,4 +129,3 @@ def obtener_ultimos_eventos(limite=10):
     return resultados
 
     
-

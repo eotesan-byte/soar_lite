@@ -24,6 +24,7 @@ def ver_historico():
 
 def main():
     basedatos.crear_tabla()
+    basedatos.crear_tablas_agente()
     while True:
         mostrar_menu()
         opcion = input("Elige una opción: ").strip()
@@ -34,7 +35,6 @@ def main():
             analizador.analizar_logs()
         elif opcion == "3":
             reporte = agente.generar_reporte()
-            basedatos.crear_tablas_agente()
             basedatos.guardar_reporte_en_bd(reporte)
             basedatos.limpiar_historico_antiguo()
             print(f"Puertos: {len(reporte['puertos_abiertos'])} | Software: {len(reporte['software_instalado'])}")

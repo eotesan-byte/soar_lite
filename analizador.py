@@ -58,31 +58,31 @@ def analizar_logs():
 
             for linea in lineas:
                 datos = parsear_linea(linea)
-                # Nuevo: intentamos extraer fecha/severidad/ip/mensaje de esta línea.
-                if datos:
-                    fecha, severidad, ip, mensaje = datos
-                    basedatos.insertar_evento(fecha, severidad, ip, mensaje)
-                    # Nuevo: guardamos el evento en la base de datos,
-                    # pase lo que pase con el resto del análisis de abajo.
+                # Intentamos extraer fecha/severidad/ip/mensaje de esta línea.
+                if not datos:
+                    # Línea con formato raro: no la podemos procesar de forma fiable,
+                    # así que la saltamos en vez de intentar adivinar su contenido a mano.
+                    continue
 
-                if "CRITICAL" in linea:
+                fecha, severidad, ip, mensaje = datos
+                basedatos.insertar_evento(fecha, severidad, ip, mensaje)
+                # Guardamos el evento en la base de datos.
+
+                if severidad == "CRITICAL":
                     criticos += 1
-                    if "IP:" in linea:
-                        partes = linea.split("IP:")
-                        if len(partes) > 1:
-                            ip_detectada = partes[1].split("-")[0].strip()
-                            acciones_soar.append(f"[BLOQUEO ACTIVO] - IP aislada por alerta crítica: {ip_detectada}")
+                    if ip:
+                        acciones_soar.append(f"[BLOQUEO ACTIVO] - IP aislada por alerta crítica: {ip}")
 
-                            print("\n" + "🚨" * 15)
-                            print(f"  ALERTA CRÍTICA — IP BLOQUEADA: {ip_detectada}")
-                            print("🚨" * 15 + "\n")
+                        print("\n" + "🚨" * 15)
+                        print(f"  ALERTA CRÍTICA — IP BLOQUEADA: {ip}")
+                        print("🚨" * 15 + "\n")
 
-                            with open("firewall_block.txt", "a", encoding="utf-8") as archivo_firewall:
-                                marca_tiempo = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                                archivo_firewall.write(f"{marca_tiempo} - BLOQUEO: {ip_detectada}\n")
-                elif "WARNING" in linea:
+                        with open("firewall_block.txt", "a", encoding="utf-8") as archivo_firewall:
+                            marca_tiempo = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                            archivo_firewall.write(f"{marca_tiempo} - BLOQUEO: {ip}\n")
+                elif severidad == "WARNING":
                     warnings += 1
-                elif "INFO" in linea:
+                elif severidad == "INFO":
                     infos += 1
 
                 for categoria, lista_palabras in PALABRAS_CLAVE.items():
