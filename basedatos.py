@@ -131,8 +131,6 @@ def obtener_ultima_fecha(tabla):
     
     resultados = cursor.fetchall()
     conexion.close()    
-    resultados = cursor.fetchall()
-    conexion.close()
     if len(resultados) < 2:
         return None
     else:
@@ -146,6 +144,7 @@ def detectar_anomalias(tabla, fecha_nueva):
     snapshot_nuevo = obtener_snapshot(tabla, fecha_nueva)
     nuevos_elementos = snapshot_nuevo - snapshot_anterior
     return nuevos_elementos
+
 
 def obtener_ultimos_eventos(limite=10):
     conexion = crear_conexion()
