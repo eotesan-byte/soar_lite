@@ -86,6 +86,7 @@ def guardar_reporte_en_bd(reporte):
 
     conexion.commit()
     conexion.close()
+    return ahora
 
 
 def limpiar_historico_antiguo():
@@ -115,17 +116,49 @@ def obtener_snapshot(tabla, fecha):
     # registro de Windows con el mismo nombre y versión).
     return set(resultados)
 
+def obtener_ultima_fecha(tabla):
+    conexion =crear_conexion()
+    cursor = conexion.cursor()
+    if tabla == "puertos":
+        cursor.execute(
+        "SELECT DISTINCT fecha FROM puertos ORDER BY fecha DESC LIMIT 2"
+        )
+    else:
+        cursor.execute(
+        "SELECT DISTINCT fecha FROM software ORDER BY fecha DESC LIMIT 2"
+        )
+       
+    
+    resultados = cursor.fetchall()
+    conexion.close()    
+    resultados = cursor.fetchall()
+    conexion.close()
+    if len(resultados) < 2:
+        return None
+    else:
+        return resultados[1][0]
 
+def detectar_anomalias(tabla, fecha_nueva):
+    fecha_anterior = obtener_ultima_fecha(tabla)
+    if fecha_anterior is None:
+        return set()
+    snapshot_anterior = obtener_snapshot(tabla, fecha_anterior)
+    snapshot_nuevo = obtener_snapshot(tabla, fecha_nueva)
+    nuevos_elementos = snapshot_nuevo - snapshot_anterior
+    return nuevos_elementos
 
 def obtener_ultimos_eventos(limite=10):
     conexion = crear_conexion()
     cursor = conexion.cursor()
     cursor.execute(
-        cursor.execute("SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIMIT ?",
+        "SELECT fecha, severidad, ip, mensaje FROM eventos ORDER BY id DESC LIMIT ?",
         (limite,)
     )
     resultados = cursor.fetchall()
     conexion.close()
     return resultados
+
+
+
 
     
